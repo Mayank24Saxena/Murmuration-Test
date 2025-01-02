@@ -24,9 +24,7 @@ function preload() {
 }
 
 function setup() {
-  daylightSlider = select('#daylight-slider');
-skyConditionSlider = select('#sky-condition-slider');
-humiditySlider = select('#humidity-slider');
+
 
   createCanvas(1200, 600);
   loadWeatherData(); // Fetch initial weather data
@@ -56,6 +54,9 @@ humiditySlider = select('#humidity-slider');
   createP("Humidity (0 = Humid, 100 = Dry)").position(10, height + 150);*/
 
   murmurationSound.loop(); // Start the murmuration sound
+    daylightSlider = select('#daylight-slider');
+skyConditionSlider = select('#sky-condition-slider');
+humiditySlider = select('#humidity-slider');
 }
 
 function draw() {
