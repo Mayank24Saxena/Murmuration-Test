@@ -24,6 +24,10 @@ function preload() {
 }
 
 function setup() {
+  daylightSlider = select('#daylight-slider');
+skyConditionSlider = select('#sky-condition-slider');
+humiditySlider = select('#humidity-slider');
+
   createCanvas(1200, 600);
   loadWeatherData(); // Fetch initial weather data
   setInterval(loadWeatherData, 10000); // Update every 30 seconds
@@ -36,7 +40,7 @@ function setup() {
     flock.addBoid(b);
   }
 
-  // Daylight slider: 0 (night) to 1 (full daylight)
+  /*/ Daylight slider: 0 (night) to 1 (full daylight)
   daylightSlider = createSlider(0, 1, 0.5, 0.01);
   daylightSlider.position(10, height + 10);
   createP("Daylight (0 = Sunrise, 1 = Sunset)").position(10, height + 30);
@@ -49,7 +53,7 @@ function setup() {
   // Humidity slider: 0 (dry) to 100 (very humid)
   humiditySlider = createSlider(0, 100, 50, 1);
   humiditySlider.position(10, height + 130);
-  createP("Humidity (0 = Humid, 100 = Dry)").position(10, height + 150);
+  createP("Humidity (0 = Humid, 100 = Dry)").position(10, height + 150);*/
 
   murmurationSound.loop(); // Start the murmuration sound
 }
