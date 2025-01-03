@@ -1,205 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
-    <meta charset="utf-8" />
+<html>
+<head>
+    <title>Murmuration Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #canvas-container {
-        flex-grow: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-
-      #controls-container {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        background: #f5f5f5;
-        padding: 20px;
-        box-sizing: border-box;
-      }
-
-      .flock-heading {
-        width: 100%;
-        text-align: center;
-        padding: 20px;
-        background: #f5f5f5;
-        margin: 0;
-        border-top: 1px solid #ddd;
-        font-family: Arial, sans-serif;
-        font-size: 24px;
-        color: #333;
-      }
-
-      #input-container {
-        width: 100%;
-        background: #f5f5f5;
-        padding: 20px;
-        box-sizing: border-box;
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        align-items: flex-start;
-        border-top: 1px solid #ddd;
-      }
-
-      .input-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      .input-label {
-        font-size: 12px;
-        color: #666;
-        font-family: Arial, sans-serif;
-      }
-
-      .input-title {
-        font-size: 16px;
-        color: #333;
-        font-family: Arial, sans-serif;
-        margin-bottom: 8px;
-        font-weight: 500;
-      }
-
-      .control-column {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .slider-container {
-        width: 80%;
-        position: relative;
-      }
-
-      input[type="range"] {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 2px;
-        background: black;
-        border-radius: 5px;
-        margin: 10px 0;
-      }
-
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 15px;
-        height: 15px;
-        background: black;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      input[type="date"], input[type="text"] {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-family: Arial, sans-serif;
-        min-width: 200px;
-      }
-
-      button {
-        padding: 8px 16px;
-        background: black;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: Arial, sans-serif;
-        height: 35px;
-        margin-top: 45px;
-        min-width: 200px;
-      }
-
-      button:hover {
-        background: #333;
-      }
-
-      .slider-labels {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
-        font-family: Arial, sans-serif;
-        font-size: 12px;
-      }
-
-      p {
-        margin: 5px 0;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        text-align: center;
-      }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #sketch-holder {
+            margin-bottom: 20px;
+        }
     </style>
-  </head>
-  <body>
-     <script src="sketch.js"></script>
-    <div id="canvas-container">
-    </div>
-    <div id="controls-container">
-      <div class="control-column">
-        <div class="slider-container">
-          <p>Daylight</p>
-          <input type="range" id="daylight-slider" min="0" max="1" step="0.01" value="0.5">
-          <div class="slider-labels">
-            <span>Sunrise</span>
-            <span>Sunset</span>
-          </div>
-        </div>
-      </div>
-      <div class="control-column">
-        <div class="slider-container">
-          <p>Sky Condition</p>
-          <input type="range" id="sky-condition-slider" min="0" max="1" step="0.01" value="0.5">
-          <div class="slider-labels">
-            <span>Rainy</span>
-            <span>Clear</span>
-          </div>
-        </div>
-      </div>
-      <div class="control-column">
-        <div class="slider-container">
-          <p>Humidity</p>
-          <input type="range" id="humidity-slider" min="0" max="100" step="1" value="50">
-          <div class="slider-labels">
-            <span>Humid</span>
-            <span>Dry</span>
-          </div>
-        </div>
-      </div>
-    </div>
-     <h2 class="flock-heading">See Your Birth Flock</h2>
-    <div id="input-container">
-     
-      <div class="input-group">
-        <div class="input-title">Birthdate</div>
-        <!--<label class="input-label">Enter your date of birth</label>-->
-        <input type="date" id="dob-input" max="2024-01-03">
-      </div>
-      <div class="input-group">
-        <div class="input-title">Birthplace</div>
-        <!--<label class="input-label">Enter your place of birth</label>-->
-        <input type="text" id="text-input" placeholder="Enter birthplace">
-      </div>
-      <div class="input-group">
-        <div class="input-title">Generate Flock</div>
-        <button id="download-btn">Generate</button>
-      </div>
-    </div>
-   
-  </body>
+</head>
+<body>
+    <div id="sketch-holder"></div>
+    <script src="your-sketch-file.js"></script>
+</body>
 </html>
