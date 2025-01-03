@@ -1,123 +1,58 @@
-/* General page styling */
+/* General page styling /
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100%; / Ensure body takes full height /
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; / Horizontally center the content /
+  align-items: center; / Vertically center the content /
 }
-
-/* Center the canvas on the page */
+/ Center the canvas on the page /
 canvas {
   display: block;
 }
-
-/* Styling for sliders */
+/ Styling for sliders /
 input[type="range"] {
-  -webkit-appearance: none;
+  -webkit-appearance: none; / Remove default styling /
   appearance: none;
-  width: 200px;
-  height: 2px;
-  background: black;
-  border-radius: 5px;
-  outline: none;
+  width: 200px; / Slider width /
+  height: 2px; / Thinner slider track height /
+  background: black; / Slider track color /
+  border-radius: 5px; / Rounded track edges /
+  outline: none; / Remove focus outline /
 }
-
-/* Slider thumb styling for WebKit browsers */
+/ Slider thumb styling for WebKit browsers (Chrome, Safari, etc.) /
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
+  -webkit-appearance: none; / Remove default styling /
   appearance: none;
-  width: 15px;
-  height: 15px;
-  background: black;
-  border-radius: 50%;
-  cursor: pointer;
+  width: 15px; / Thumb width /
+  height: 15px; / Thumb height /
+  background: black; / Thumb color /
+  border-radius: 50%; / Circular thumb /
+  cursor: pointer; / Change cursor to pointer /
 }
-
-/* Slider thumb styling for Firefox */
+/ Slider thumb styling for Firefox /
 input[type="range"]::-moz-range-thumb {
-  width: 15px;
-  height: 15px;
-  background: black;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
+  width: 15px; / Thumb width /
+  height: 15px; / Thumb height /
+  background: black; / Thumb color /
+  border: none; / Remove border /
+  border-radius: 50%; / Circular thumb /
+  cursor: pointer; / Change cursor to pointer /
 }
-
-/* Slider thumb styling for Edge and IE */
+/ Slider thumb styling for Edge and Internet Explorer /
 input[type="range"]::-ms-thumb {
-  width: 15px;
-  height: 15px;
-  background: black;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
+  width: 15px; / Thumb width /
+  height: 15px; / Thumb height /
+  background: black; / Thumb color /
+  border: none; / Remove border /
+  border-radius: 50%; / Circular thumb /
+  cursor: pointer; / Change cursor to pointer /
 }
-
-/* Text styling */
+/ Optional: Add some spacing between sliders and labels */
 p {
   margin-top: 5px;
   margin-bottom: 15px;
   font-family: Arial, sans-serif;
   font-size: 14px;
-}
-
-/* Input container and group styling */
-#input-container {
-  width: 100%;
-  background: #f5f5f5;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  align-items: flex-start;
-  border-top: 1px solid #ddd;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  height: 100%;
-  justify-content: flex-start;
-}
-
-.input-title {
-  font-size: 16px;
-  color: #333;
-  font-family: Arial, sans-serif;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-/* Input field styling */
-input[type="date"],
-input[type="text"] {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-family: Arial, sans-serif;
-  min-width: 200px;
-  height: 35px;
-  box-sizing: border-box;
-}
-
-/* Button styling */
-button {
-  padding: 8px 16px;
-  background: black;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  height: 35px;
-  min-width: 200px;
-  margin-top: 21px; /* Aligns with other inputs accounting for input-title height */
-}
-
-button:hover {
-  background: #333;
 }
