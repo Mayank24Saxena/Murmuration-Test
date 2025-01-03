@@ -17,6 +17,9 @@ let murmurationSound; // Sound object for murmuration
 let repelSound; // Sound object for repelling effect
 
 let repelPoints = []; // Array to store multiple repelling points
+let generateButton; // Button for generating random flock and downloading snapshot
+let datePicker; // Input for date of birth
+let timeInput; // Input for time of the day
 
 function preload() {
   murmurationSound = loadSound("STARLINGS.mp3"); // Load the murmuration sound
@@ -24,8 +27,6 @@ function preload() {
 }
 
 function setup() {
-
-
   createCanvas(1200, 600);
   loadWeatherData(); // Fetch initial weather data
   setInterval(loadWeatherData, 10000); // Update every 30 seconds
@@ -38,25 +39,36 @@ function setup() {
     flock.addBoid(b);
   }
 
-  /*/ Daylight slider: 0 (night) to 1 (full daylight)
-  daylightSlider = createSlider(0, 1, 0.5, 0.01);
-  daylightSlider.position(10, height + 10);
-  createP("Daylight (0 = Sunrise, 1 = Sunset)").position(10, height + 30);
-
-  // Sky condition slider: 0 (rainy) to 1 (clear skies)
-  skyConditionSlider = createSlider(0, 1, 0.5, 0.01);
-  skyConditionSlider.position(10, height + 70);
-  createP("Sky Condition (0 = Rainy Weather, 1 = Clear Weather)").position(10, height + 90);
-
-  // Humidity slider: 0 (dry) to 100 (very humid)
-  humiditySlider = createSlider(0, 100, 50, 1);
-  humiditySlider.position(10, height + 130);
-  createP("Humidity (0 = Humid, 100 = Dry)").position(10, height + 150);*/
-
   murmurationSound.loop(); // Start the murmuration sound
-    daylightSlider = select('#daylight-slider');
-skyConditionSlider = select('#sky-condition-slider');
-humiditySlider = select('#humidity-slider');
+
+  // Create sliders
+  daylightSlider = createSlider(0, 1, 0.5, 0.01);
+  daylightSlider.position(10, height + 30);
+  createP("Daylight (0 = Sunrise, 1 = Sunset)").position(10, height + 10);
+
+  skyConditionSlider = createSlider(0, 1, 0.5, 0.01);
+  skyConditionSlider.position(200, height + 30);
+  createP("Sky Condition (0 = Rainy Weather, 1 = Clear Weather)").position(200, height + 10);
+
+  humiditySlider = createSlider(0, 100, 50, 1);
+  humiditySlider.position(400, height + 30);
+  createP("Humidity (0 = Humid, 100 = Dry)").position(400, height + 10);
+
+  // Add date picker and time input
+  datePicker = createInput();
+  datePicker.attribute('type', 'date');
+  datePicker.position(600, height + 30);
+  createP("Date of Birth").position(600, height + 10);
+
+  timeInput = createInput();
+  timeInput.attribute('type', 'time');
+  timeInput.position(800, height + 30);
+  createP("Time of Day").position(800, height + 10);
+
+  // Add generate button
+  generateButton = createButton('Generate');
+  generateButton.position(1000, height + 30);
+  generateButton.mousePressed(generateRandomFlock);
 }
 
 function draw() {
@@ -106,6 +118,28 @@ function mouseReleased() {
   repelPoints = []; // Clear repelling points when mouse is released
 }
 
+function generateRandomFlock() {
+  // Generate random values for daylight, sky condition, and humidity
+  daylightValue = random(0, 1);
+  let skyConditionValue = random(0, 1);
+  currentHumidity = random(0, 100);
+
+  // Update sliders with random values
+  daylightSlider.value(daylightValue);
+  skyConditionSlider.value(skyConditionValue);
+  humiditySlider.value(currentHumidity);
+
+  // Add new random flock
+  flock.boids = []; // Clear existing flock
+  for (let i = 0; i < random(500, 1700); i++) {
+    let b = new Boid(random(width), random(height));
+    flock.addBoid(b);
+  }
+
+  // Download snapshot of the canvas
+  saveCanvas('flock_snapshot', 'png');
+}
+
 function adjustBoidCount(daylightValue, skyConditionValue) {
   let targetBoidCount = map(daylightValue, 0, 1, 500, 1700); // Fewer boids at night, more during day
   while (flock.boids.length > targetBoidCount) flock.boids.pop(); // Remove excess
@@ -118,7 +152,7 @@ function adjustBoidCount(daylightValue, skyConditionValue) {
 function adjustSoundVolumeAndPitch() {
   let avgSpeed = flock.getAverageSpeed();
   murmurationSound.rate(map(avgSpeed, 2, 7, 0.8, 1.5)); // Adjust pitch based on average speed
-  let density = flock.boids.length / 1200; // Normze density between 0 and 1
+  let density = flock.boids.length / 1200; // Normalize density between 0 and 1
   murmurationSound.setVolume(density);
 }
 
@@ -318,8 +352,9 @@ class Boid {
       let steer = p5.Vector.sub(sum, this.velocity);
       steer.limit(this.maxforce);
       return steer;
+    } else {
+      return createVector(0, 0);
     }
-    return createVector(0, 0);
   }
 
   cohesion(boids) {
@@ -337,13 +372,18 @@ class Boid {
 
     if (count > 0) {
       sum.div(count);
-      sum.sub(this.position);
-      sum.normalize();
-      sum.mult(this.maxspeed);
-      let steer = p5.Vector.sub(sum, this.velocity);
-      steer.limit(this.maxforce);
-      return steer;
+      return this.seek(sum);
+    } else {
+      return createVector(0, 0);
     }
-    return createVector(0, 0);
+  }
+
+  seek(target) {
+    let desired = p5.Vector.sub(target, this.position);
+    desired.normalize();
+    desired.mult(this.maxspeed);
+    let steer = p5.Vector.sub(desired, this.velocity);
+    steer.limit(this.maxforce);
+    return steer;
   }
 }
