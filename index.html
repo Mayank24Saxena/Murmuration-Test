@@ -1,70 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <title>Birth Flock Visualization</title>
+  <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <main>
-        <div id="canvas-container"></div>
-        
-        <div id="controls-container">
-            <div class="control-column">
-                <div class="slider-container">
-                    <p>Daylight</p>
-                    <input type="range" id="daylight-slider" min="0" max="1" step="0.01" value="0.5">
-                    <div class="slider-labels">
-                        <span>Night</span>
-                        <span>Day</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="control-column">
-                <div class="slider-container">
-                    <p>Sky Condition</p>
-                    <input type="range" id="sky-slider" min="0" max="1" step="0.01" value="0.5">
-                    <div class="slider-labels">
-                        <span>Stormy</span>
-                        <span>Clear</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="control-column">
-                <div class="slider-container">
-                    <p>Humidity</p>
-                    <input type="range" id="humidity-slider" min="0" max="100" step="1" value="50">
-                    <div class="slider-labels">
-                        <span>Dry</span>
-                        <span>Humid</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
 
-        <h2 class="flock-heading">Birth Flock Generator</h2>
-        
-        <div id="input-container">
-            <div class="input-group">
-                <div class="input-title">Birthdate</div>
-                <input type="date" id="birth-date" max="2024-01-03">
-            </div>
-            
-            <div class="input-group">
-                <div class="input-title">Birthplace</div>
-                <input type="text" id="birth-place" placeholder="Enter birthplace">
-            </div>
-            
-            <div class="input-group">
-                <div class="input-title">Generate Flock</div>
-                <button id="generate-btn">Generate</button>
-            </div>
-        </div>
+  </head>
+  <body>
+    <main>
     </main>
     <script src="sketch.js"></script>
-</body>
+  </body>
 </html>
