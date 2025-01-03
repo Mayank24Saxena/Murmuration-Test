@@ -31,6 +31,18 @@
         box-sizing: border-box;
       }
 
+      .flock-heading {
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+        background: #f5f5f5;
+        margin: 0;
+        border-top: 1px solid #ddd;
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        color: #333;
+      }
+
       #input-container {
         width: 100%;
         background: #f5f5f5;
@@ -39,7 +51,7 @@
         display: flex;
         justify-content: center;
         gap: 20px;
-        align-items: center;
+        align-items: flex-start;
         border-top: 1px solid #ddd;
       }
 
@@ -53,6 +65,14 @@
         font-size: 12px;
         color: #666;
         font-family: Arial, sans-serif;
+      }
+
+      .input-title {
+        font-size: 16px;
+        color: #333;
+        font-family: Arial, sans-serif;
+        margin-bottom: 8px;
+        font-weight: 500;
       }
 
       .control-column {
@@ -101,7 +121,8 @@
         cursor: pointer;
         font-family: Arial, sans-serif;
         height: 35px;
-        margin-top: 22px;
+        margin-top: 45px;
+        min-width: 200px;
       }
 
       button:hover {
@@ -160,16 +181,22 @@
         </div>
       </div>
     </div>
+    <h2 class="flock-heading">See Your Birth Flock</h2>
     <div id="input-container">
       <div class="input-group">
-        <label class="input-label">Date of Birth</label>
+        <div class="input-title">Birthdate</div>
+        <label class="input-label">Enter your date of birth</label>
         <input type="date" id="dob-input" max="2024-01-03">
       </div>
       <div class="input-group">
-        <label class="input-label">Description</label>
-        <input type="text" id="text-input" placeholder="Enter description">
+        <div class="input-title">Birthplace</div>
+        <label class="input-label">Enter your place of birth</label>
+        <input type="text" id="text-input" placeholder="Enter birthplace">
       </div>
-      <button id="download-btn">Download</button>
+      <div class="input-group">
+        <div class="input-title">Generate Flock</div>
+        <button id="download-btn">Generate</button>
+      </div>
     </div>
     <script src="sketch.js"></script>
   </body>
