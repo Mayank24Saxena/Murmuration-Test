@@ -115,7 +115,7 @@ button {
   font-family: Arial, sans-serif;
   height: 35px;
   min-width: 200px;
-  margin-top: 32px; /* Aligns with other inputs accounting for input-title height */
+  margin-top: 21px; /* Aligns with other inputs accounting for input-title height */
 }
 
 button:hover {
