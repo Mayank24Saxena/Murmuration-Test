@@ -1,136 +1,114 @@
 let flock;
-let weatherData;
+let weatherData; // To store the weather data
 let apiURL = "https://api.openweathermap.org/data/2.5/weather?q=Bengaluru&APPID=aacedc9a30cfcbe4d7e237cd5ad4830b";
 
-let currentTemp = 273;
-let targetTemp = 273;
-let currentHumidity = 50;
+let currentTemp = 273; // Initial temperature in Kelvin
+let targetTemp = 273; // Target temperature
+let currentHumidity = 50; // Initial humidity
 let targetHumidity = 50;
-let daylightValue = 0;
-let weatherCondition = "";
+let daylightValue = 0; // Amount of sunlight
+let weatherCondition = ""; // Current weather condition
 
-// Input elements
-let dateInput;
-let timeInput;
-let generateButton;
-let daylightSlider;
-let skyConditionSlider;
-let humiditySlider;
+let daylightSlider; // Slider for controlling daylight
+let humiditySlider; // Slider for controlling humidity
+let skyConditionSlider; // Slider for controlling sky condition
 
-let murmurationSound;
-let repelSound;
-let repelPoints = [];
+let murmurationSound; // Sound object for murmuration
+let repelSound; // Sound object for repelling effect
+
+let repelPoints = []; // Array to store multiple repelling points
 
 function preload() {
-  // Note: You'll need to provide these sound files
-  murmurationSound = loadSound("STARLINGS.mp3");
-  repelSound = loadSound("FLIGHT.mp3");
+  murmurationSound = loadSound("STARLINGS.mp3"); // Load the murmuration sound
+  repelSound = loadSound("FLIGHT.mp3"); // Load the repel sound
 }
 
 function setup() {
-  // Create canvas and position it
-  let canvas = createCanvas(1200, 600);
-  canvas.parent('sketch-holder'); // Assuming you have a div with this ID
-  
-  // Create input elements
-  dateInput = createInput('', 'date');
-  dateInput.position(10, height + 10);
-  dateInput.style('margin-right', '10px');
-  
-  timeInput = createInput('', 'time');
-  timeInput.position(200, height + 10);
-  timeInput.style('margin-right', '10px');
-  
-  generateButton = createButton('Generate');
-  generateButton.position(390, height + 10);
-  generateButton.mousePressed(generateFlockSnapshot);
 
-  // Create sliders
-  daylightSlider = createSlider(0, 1, 0.5, 0.01);
-  daylightSlider.position(10, height + 50);
-  
-  skyConditionSlider = createSlider(0, 1, 0.5, 0.01);
-  skyConditionSlider.position(10, height + 90);
-  
-  humiditySlider = createSlider(0, 100, 50, 1);
-  humiditySlider.position(10, height + 130);
 
-  // Create labels
-  createP('Daylight Level').position(160, height + 35);
-  createP('Sky Condition').position(160, height + 75);
-  createP('Humidity Level').position(160, height + 115);
+  createCanvas(1200, 600);
+  loadWeatherData(); // Fetch initial weather data
+  setInterval(loadWeatherData, 10000); // Update every 30 seconds
 
-  // Initialize flock
   flock = new Flock();
+
+  // Add an initial set of boids into the system (morning = 500 boids)
   for (let i = 0; i < 2000; i++) {
     let b = new Boid(width / 2 + random(-50, 50), height / 2 + random(-50, 50));
     flock.addBoid(b);
   }
 
-  // Start sound and load weather
-  murmurationSound.loop();
-  loadWeatherData();
-  setInterval(loadWeatherData, 10000);
-}
+  /*/ Daylight slider: 0 (night) to 1 (full daylight)
+  daylightSlider = createSlider(0, 1, 0.5, 0.01);
+  daylightSlider.position(10, height + 10);
+  createP("Daylight (0 = Sunrise, 1 = Sunset)").position(10, height + 30);
 
-function generateFlockSnapshot() {
-  // Validate inputs
-  if (!dateInput.value() || !timeInput.value()) {
-    alert('Please enter both date and time');
-    return;
-  }
+  // Sky condition slider: 0 (rainy) to 1 (clear skies)
+  skyConditionSlider = createSlider(0, 1, 0.5, 0.01);
+  skyConditionSlider.position(10, height + 70);
+  createP("Sky Condition (0 = Rainy Weather, 1 = Clear Weather)").position(10, height + 90);
 
-  // Generate random values
-  let randomDaylight = random(0, 1);
-  let randomSky = random(0, 1);
-  let randomHumidity = random(0, 100);
+  // Humidity slider: 0 (dry) to 100 (very humid)
+  humiditySlider = createSlider(0, 100, 50, 1);
+  humiditySlider.position(10, height + 130);
+  createP("Humidity (0 = Humid, 100 = Dry)").position(10, height + 150);*/
 
-  // Set slider values
-  daylightSlider.value(randomDaylight);
-  skyConditionSlider.value(randomSky);
-  humiditySlider.value(randomHumidity);
-
-  // Force one frame update
-  draw();
-
-  // Create filename with date and time
-  let dateTimeStr = dateInput.value() + '_' + timeInput.value().replace(':', '-');
-  let filename = 'murmuration_' + dateTimeStr + '.png';
-
-  // Save canvas
-  saveCanvas(filename, 'png');
+  murmurationSound.loop(); // Start the murmuration sound
+    daylightSlider = select('#daylight-slider');
+skyConditionSlider = select('#sky-condition-slider');
+humiditySlider = select('#humidity-slider');
 }
 
 function draw() {
-  background(255);
+  background(255); // Keep the background white at all times
 
-  // Update environmental values
+  // Update sliders' values
   daylightValue = daylightSlider.value();
   let skyConditionValue = skyConditionSlider.value();
   currentHumidity = humiditySlider.value();
 
   if (weatherData) {
+    // Smooth transitions for temperature and humidity
     currentTemp = lerp(currentTemp, targetTemp, 0.05);
     currentHumidity = lerp(currentHumidity, targetHumidity, 0.05);
 
+    // Pass weather data to each boid
     for (let boid of flock.boids) {
       boid.updateWeatherEffects(currentTemp, currentHumidity, weatherCondition, daylightValue, skyConditionValue);
     }
   }
 
   flock.run();
-  adjustBoidCount(daylightValue, skyConditionValue);
-  adjustSoundVolumeAndPitch();
+  adjustBoidCount(daylightValue, skyConditionValue); // Adjust number of boids based on time of day and sky condition
 
+  adjustSoundVolumeAndPitch(); // Adjust sound volume and pitch based on flock dynamics
+
+  // Handle repelling points
   if (repelPoints.length > 0) {
     flock.repelMultiple(repelPoints);
   }
 }
 
-// Existing helper functions
+function mousePressed() {
+  // Only add a repelling point if the mouse is within the canvas bounds
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    repelPoints.push(createVector(mouseX, mouseY)); // Add new repelling point
+    repelSound.setVolume(0.1); // Reduce sound volume
+    repelSound.play(0, 1, 0.2, 0, 1.5); // Play the repel sound for 1-2 seconds
+  }
+}
+
+function mouseReleased() {
+  // Fade out the repel sound when the mouse is released
+  if (repelSound.isPlaying()) {
+    repelSound.fade(0, 1.5); // Fade out over 1.5 seconds
+  }
+  repelPoints = []; // Clear repelling points when mouse is released
+}
+
 function adjustBoidCount(daylightValue, skyConditionValue) {
-  let targetBoidCount = map(daylightValue, 0, 1, 500, 1700);
-  while (flock.boids.length > targetBoidCount) flock.boids.pop();
+  let targetBoidCount = map(daylightValue, 0, 1, 500, 1700); // Fewer boids at night, more during day
+  while (flock.boids.length > targetBoidCount) flock.boids.pop(); // Remove excess
   while (flock.boids.length < targetBoidCount) {
     let b = new Boid(width / 2 + random(-100, 100), height / 2 + random(-100, 100));
     flock.addBoid(b);
@@ -139,42 +117,31 @@ function adjustBoidCount(daylightValue, skyConditionValue) {
 
 function adjustSoundVolumeAndPitch() {
   let avgSpeed = flock.getAverageSpeed();
-  murmurationSound.rate(map(avgSpeed, 2, 7, 0.8, 1.5));
-  let density = flock.boids.length / 1200;
+  murmurationSound.rate(map(avgSpeed, 2, 7, 0.8, 1.5)); // Adjust pitch based on average speed
+  let density = flock.boids.length / 1200; // Normze density between 0 and 1
   murmurationSound.setVolume(density);
 }
 
-function mousePressed() {
-  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    repelPoints.push(createVector(mouseX, mouseY));
-    repelSound.setVolume(0.1);
-    repelSound.play(0, 1, 0.2, 0, 1.5);
-  }
-}
-
-function mouseReleased() {
-  if (repelSound.isPlaying()) {
-    repelSound.fade(0, 1.5);
-  }
-  repelPoints = [];
-}
-
-// Weather data handling
 function loadWeatherData() {
   loadJSON(apiURL, processWeatherData, handleError);
 }
 
 function processWeatherData(data) {
   weatherData = data;
+
   targetTemp = weatherData.main.temp;
   targetHumidity = weatherData.main.humidity;
   weatherCondition = weatherData.weather[0].description;
 
-  let now = millis() / 1000 + weatherData.timezone;
+  let now = millis() / 1000 + weatherData.timezone; // Adjust for timezone
   let sunrise = weatherData.sys.sunrise;
   let sunset = weatherData.sys.sunset;
 
-  daylightValue = (now < sunrise || now > sunset) ? 0 : map(now, sunrise, sunset, 0, 1);
+  if (now < sunrise || now > sunset) {
+    daylightValue = 0;
+  } else {
+    daylightValue = map(now, sunrise, sunset, 0, 1); // Scale daylight between [0, 1]
+  }
 }
 
 function handleError(err) {
@@ -197,6 +164,7 @@ class Flock {
     for (let point of points) {
       for (let boid of this.boids) {
         let distance = p5.Vector.dist(boid.position, point);
+
         if (distance < 200) {
           let repelForce = p5.Vector.sub(boid.position, point);
           repelForce.setMag(map(distance, 0, 200, boid.maxforce * 20, 0));
@@ -265,9 +233,9 @@ class Boid {
   }
 
   flock(boids) {
-    let sep = this.separate(boids).mult(this.separationFactor);
+    let sep = this.separate(boids).mult(this.separationFactor || 2.0);
     let ali = this.align(boids).mult(2);
-    let coh = this.cohesion(boids).mult(this.cohesionFactor);
+    let coh = this.cohesion(boids).mult(this.cohesionFactor || 1);
 
     this.applyForce(sep);
     this.applyForce(ali);
@@ -320,14 +288,12 @@ class Boid {
       }
     }
 
-    if (count > 0) {
-      steer.div(count);
-      if (steer.mag() > 0) {
-        steer.normalize();
-        steer.mult(this.maxspeed);
-        steer.sub(this.velocity);
-        steer.limit(this.maxforce);
-      }
+    if (count > 0) steer.div(count);
+    if (steer.mag() > 0) {
+      steer.normalize();
+      steer.mult(this.maxspeed);
+      steer.sub(this.velocity);
+      steer.limit(this.maxforce);
     }
     return steer;
   }
@@ -371,17 +337,13 @@ class Boid {
 
     if (count > 0) {
       sum.div(count);
-      return this.seek(sum);
+      sum.sub(this.position);
+      sum.normalize();
+      sum.mult(this.maxspeed);
+      let steer = p5.Vector.sub(sum, this.velocity);
+      steer.limit(this.maxforce);
+      return steer;
     }
     return createVector(0, 0);
-  }
-
-  seek(target) {
-    let desired = p5.Vector.sub(target, this.position);
-    desired.normalize();
-    desired.mult(this.maxspeed);
-    let steer = p5.Vector.sub(desired, this.velocity);
-    steer.limit(this.maxforce);
-    return steer;
   }
 }
